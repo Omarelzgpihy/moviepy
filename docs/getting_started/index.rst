@@ -1,18 +1,20 @@
-.. _getting_started:
+from moviepy.editor import *
 
-Getting started with MoviePy
-------------------------------
+# مسار الصورة (غير الاسم حسب الحاجة)
+image_path = "property_image.png"
 
-This section explain everything you need to start editing with MoviePy. To go further, have a look at the :ref:`user_guide` and the :ref:`reference_manual`.
+# تحميل الصورة وتحديد مدة الفيديو
+image_clip = ImageClip(image_path).set_duration(10)
 
+# تكبير بسيط للصورة لتطبيق حركة تدريجية (zoom/pan)
+image_clip = image_clip.resize(height=2200)
 
-.. toctree::
-   :maxdepth: 1
+# تطبيق حركة بان لأعلى وتكبير تدريجي خفيف
+animated_clip = image_clip.set_position(lambda t: ("center", int(50 - 10*t))) \
+                          .resize(lambda t: 1 + 0.01 * t)
 
-   install
-   quick_presentation
-   moviepy_10_minutes
-   docker
-   updating_to_v2
-   FAQ
+# ضبط أبعاد الفيديو لتكون 9:16 (مثل شاشة الجوال)
+final_clip = animated_clip.set_fps(24).resize((1080, 1920))
 
+# تصدير الفيديو
+final_clip.write_videofile("property_for_sale_video.mp4", codec="libx264", audio=False)
